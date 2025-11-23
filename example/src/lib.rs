@@ -15,15 +15,15 @@ pub struct Options {
 pub fn main() {
     let options = Options::from_args();
     let controller = controller::Controller::new(&options);
-    let title = "conways game of life";
+    let params = easy_shader_runner::Parameters::new(controller, "conways game of life");
     cfg_if::cfg_if! {
         if #[cfg(all(
             any(feature = "hot-reload-shader", feature = "runtime-compilation"),
             not(target_arch = "wasm32")
         ))] {
-            easy_shader_runner::run_with_runtime_compilation(controller, "shader/shader", title);
+            easy_shader_runner::run_with_runtime_compilation(params, "example/shader/shader", false, None).unwrap();
         } else {
-            easy_shader_runner::run_with_prebuilt_shader(controller, include_bytes!(env!("shader.spv")), title);
+            easy_shader_runner::run_with_prebuilt_shader(params, include_bytes!(env!("shader.spv"))).unwrap();
         }
     }
 }

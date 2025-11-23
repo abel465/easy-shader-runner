@@ -94,7 +94,9 @@ pub fn main_cs(
         }
     }
 
-    if matches!(val, CellState::On) && !(2..=3).contains(&count) {
+    // Clippy would prefer that we wrote this as  `!(2..=3).contains(&count)`, but that causes the spirv-builder compiler to fail
+    #[expect(clippy::manual_range_contains, reason="work around spirv-builder compiler failure")]
+    if matches!(val, CellState::On) && (count < 2 || count > 3) {
         cell_grid.set(index, CellState::Dying);
     } else if matches!(val, CellState::Off) && count == 3 {
         cell_grid.set(index, CellState::Spawning);
