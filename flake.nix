@@ -58,7 +58,7 @@
           src = ./.;
           cargoLock.lockFile = ./Cargo.lock;
           cargoLock.outputHashes = {
-            "rustc_codegen_spirv-0.9.0" = "sha256-AFt3Nc+NqK8DxNUhDBcOUmk3XDVcoToVeFIMYNszdbY=";
+            "rustc_codegen_spirv-0.9.0" = "sha256-RAk8Bbk2LgkQkLlUA1y7QG2Drmz+Fr9ZIRYSsFH2YFc=";
           };
           buildNoDefaultFeatures = true;
           buildFeatures = ["runtime-compilation"];
