@@ -2,7 +2,7 @@
   description = "template";
 
   inputs = {
-    fenix.url = "github:nix-community/fenix/f2eb76a4605b0f055e2a9eac47fe1797f19d21c1";
+    fenix.url = "github:nix-community/fenix/19c910fe3de1768e64e76b5ee6daa346e6b07410";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -58,7 +58,7 @@
           src = ./.;
           cargoLock.lockFile = ./Cargo.lock;
           cargoLock.outputHashes = {
-            "rustc_codegen_spirv-0.9.0" = "sha256-AFt3Nc+NqK8DxNUhDBcOUmk3XDVcoToVeFIMYNszdbY=";
+            "rustc_codegen_spirv-0.9.0" = "sha256-RAk8Bbk2LgkQkLlUA1y7QG2Drmz+Fr9ZIRYSsFH2YFc=";
           };
           buildNoDefaultFeatures = true;
           buildFeatures = ["runtime-compilation"];
