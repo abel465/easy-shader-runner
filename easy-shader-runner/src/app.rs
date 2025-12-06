@@ -184,13 +184,15 @@ impl<C: ControllerTrait + Send> App<C> {
 
 impl<C: ControllerTrait + Send> ApplicationHandler<CustomEvent<C>> for App<C> {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-        if let Self::Builder(builder) = std::mem::replace(
+        if let Self::Builder(mut builder) = std::mem::replace(
             self,
             Self::Building(
                 #[cfg(target_arch = "wasm32")]
                 None,
             ),
         ) {
+            builder.params.controller.app_resumed(event_loop);
+
             let window_attributes =
                 Window::default_attributes().with_title(builder.params.title.clone());
             let window_attributes = {

@@ -1,5 +1,6 @@
 use crate::GraphicsContext;
 use egui_winit::winit::event::{ElementState, KeyEvent, MouseButton, TouchPhase};
+use egui_winit::winit::event_loop::ActiveEventLoop;
 use glam::*;
 
 pub trait ControllerTrait: 'static {
@@ -78,4 +79,8 @@ pub trait ControllerTrait: 'static {
 
     #[cfg(all(feature = "hot-reload-shader", not(target_arch = "wasm32")))]
     fn new_shader_module(&mut self) {}
+
+    /// This callback is invoked during initialision, before the wgpu context is created.
+    /// For example, it allows you to detect the available screen resolutions before the shader is first launched.
+    fn app_resumed(&mut self, _event_loop: &ActiveEventLoop) {}
 }
