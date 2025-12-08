@@ -146,21 +146,30 @@ impl<C: ControllerTrait + Send> App<C> {
         #[cfg(not(target_arch = "wasm32"))]
         gfx.ctx.set_vsync(gfx.ui_state.vsync);
 
-        if gfx.ui_state.fullscreen != gfx.ui_state.fullscreen_set {
-            let desired = if gfx.ui_state.fullscreen {
-                // Borderless(None) seems to be the preferred way to do this on macOS.
-                // Seems to work fine on Windows and Linux as well.
-                Some(Fullscreen::Borderless(None))
+        // Fullscreen is tricky!
+        // On macOS, the keypress Ctrl+Command+F (fullscreen) is handled by the OS.
+        // In other words, the fullscreen state may change for reasons we can't otherwise detect.
+
+        if let Some(should_be_fullscreen) = gfx.ui_state.fullscreen_requested {
+            // This is an event that tells us the application wishes to assert the fullscreen state.
+            if should_be_fullscreen {
+                gfx.window.current_monitor().map(|monitor| {
+                    monitor.video_modes().next().map(|mode|{
+                        if cfg!(any(target_os = "macos", unix)) {
+                            gfx.window.set_fullscreen(Some(Fullscreen::Borderless(Some(monitor))));
+                        } else {
+                            gfx.window.set_fullscreen(Some(Fullscreen::Exclusive(mode)));
+                        }
+                    })
+                });
             } else {
-                None
-            };
-            if desired == gfx.window.fullscreen() {
-                gfx.window.set_fullscreen(desired);
+                gfx.window.set_fullscreen(None)
             }
-            gfx.window.set_maximized(gfx.ui_state.fullscreen);
-            gfx.window.set_decorations(!gfx.ui_state.fullscreen);
-            gfx.ui_state.fullscreen_set = gfx.ui_state.fullscreen;
+            gfx.ui_state.fullscreen_requested = None;
         }
+        // Always send the current state back to the app.
+        gfx.ui_state.fullscreen_active = gfx.window.fullscreen().is_some();
+
         result
     }
 

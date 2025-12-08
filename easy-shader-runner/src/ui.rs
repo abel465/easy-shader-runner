@@ -23,8 +23,15 @@ pub struct UiState {
     fps: u32,
     #[cfg(not(target_arch = "wasm32"))]
     pub vsync: bool,
-    pub fullscreen: bool,
-    pub(crate) fullscreen_set: bool,
+
+    /// Fullscreen is tricky!
+    /// On macOS, the keypress Ctrl+Command+F (fullscreen) is handled by the OS.
+    /// In other words, the fullscreen state may change for reasons we can't otherwise detect.
+    ///
+    /// easy-shader-runner sets fullscreen_active to reflect the actual fullscreen state.
+    pub fullscreen_active: bool,
+    /// Controller sets this when it wants to change the state. easy-shader-runner will clear it once actioned.
+    pub fullscreen_requested: Option<bool>,
     pub escape_exits: bool,
 }
 
@@ -34,18 +41,14 @@ impl UiState {
             fps: 0,
             #[cfg(not(target_arch = "wasm32"))]
             vsync: true,
-            fullscreen: false,
-            fullscreen_set: false,
+            fullscreen_active: false,
+            fullscreen_requested: None,
             escape_exits: options.escape_exits,
         }
     }
 
     pub fn fps(&self) -> &u32 {
         &self.fps
-    }
-
-    pub fn is_fullscreen(&self) -> bool {
-        self.fullscreen_set
     }
 }
 
